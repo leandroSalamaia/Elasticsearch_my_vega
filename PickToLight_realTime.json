@@ -1,0 +1,111 @@
+{
+    "$schema": "https://vega.github.io/schema/vega/v4.json",
+    "padding": 5,
+     "data": [
+    {
+      "name": "table",
+      "url": {
+          "index": "logs-sao-caetano",
+          "body":{
+            "query": {
+              "wildcard": {
+                  "Message.keyword": {
+                      "wildcard": "*PickTolight visualization: 'ptl01'*",
+                      "boost": 1.0
+                  }
+              }
+            },
+            "sort": [
+              {
+                  "_doc": {
+                      "order": "desc"
+                  }
+              }
+            ],
+            "size":1,
+            "script_fields": {
+              "data": {
+                "script": {
+                  "id": "my-split",
+                  "params": {
+                    "field": "Message.keyword"
+                  }
+                }
+              }
+            }
+          }
+      },
+      "format": {"property": "hits.hits.0.fields.data"}
+    }
+    ],
+    "scales": [
+      {
+        "name": "xscale",
+        "type": "band",
+        "domain": {"data": "table", "field": "stage"},
+        "range": {"step": 250},
+        "paddingInner": 3
+      },
+      {
+        "name": "yscale",
+        "type": "band",
+        "domain": {"data": "table", "field": "row"},
+        "range": {"step": 120}
+      }
+    ],
+    "marks": [
+      {
+        "name": "boxOuter",
+        "type": "rect",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "fill": {"field": "status"},
+            "x": {"scale": "xscale", "field": "stage"},
+            "y": {"scale": "yscale", "field": "row"},
+            "width": {"value": 130},
+            "height": {"value": 100}
+          }
+        }
+      },
+      {
+        "name": "zone",
+        "type": "text",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "x": {"scale": "xscale", "field": "stage", "offset": 30},
+            "y": {"scale": "yscale", "field": "row", "offset": 20},
+            "text": {"field": "zone"},
+            "align": {"value": "center"}
+          }
+        }
+      },
+      {
+        "name": "sessions",
+        "type": "text",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "x": {"scale": "xscale", "field": "stage", "offset": 25},
+            "y": {"scale": "yscale", "field": "row", "offset": 40},
+            "text": {"value": "value"},
+            "align": {"value": "center"}
+          }
+        }
+      },
+      {
+        "name": "sessions-number",
+        "type": "text",
+        "from": {"data": "table"},
+        "encode": {
+          "enter": {
+            "x": {"scale": "xscale", "field": "stage", "offset": 60},
+            "y": {"scale": "yscale", "field": "row", "offset": 40},
+            "text": {"field": "sessions"},
+            "align": {"value": "center"}
+          }
+        }
+      }
+    ]
+  }
